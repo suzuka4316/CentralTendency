@@ -12,7 +12,7 @@
     </section>
     <h3 v-else>No customers are registered...</h3>
   </base-card>
-  
+
   <base-card>
     <base-button @click="calcCentralTendency()"
       >Calculate Central Tendency</base-button
@@ -93,7 +93,9 @@ export default {
 
       // if length of array is even, calculate the average between 2 numbers
       if (sortedAges.length % 2 === 0) {
-        return (sortedAges[middleIndex - 1] + sortedAges[middleIndex]) / 2;
+        const average =
+          (sortedAges[middleIndex - 1] + sortedAges[middleIndex]) / 2;
+        return average.toFixed(2);
       }
       return sortedAges[middleIndex];
     },
@@ -111,7 +113,7 @@ export default {
       }
 
       const sum = ages.reduce((prev, curr) => prev + curr, 0); // initial value = 0
-      this.average = sum / ages.length;
+      this.average = (sum / ages.length).toFixed(2);
       this.mode = this.searchMode(ages);
       this.median = this.searchMedian(ages);
     },
