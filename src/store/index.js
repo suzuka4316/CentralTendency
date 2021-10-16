@@ -16,7 +16,7 @@ export const store = new Vuex.Store({
   actions: {
     async loadCustomers(context) {
       const response = await fetch(
-        "https://central-tendency-default-rtdb.firebaseio.com/customers.json"
+        "https://central-tendency-default-rtdb.firebaseio.com/customerData.json"
       );
       const responseData = await response.json();
 
