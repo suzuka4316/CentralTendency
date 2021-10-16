@@ -1,26 +1,35 @@
 <template>
-  <h1>Central Tendency App</h1>
-  <section v-if="hasCustomers">
-    <ul v-for="customer in customers" :key="customer.id">
-      <li>{{ customer.dob }}</li>
-    </ul>
-  </section>
-  <p v-else>No customers are registered...</p>
-  <button @click="calcCentralTendency()">Calculate Central Tendency</button>
-  <section>
-    <p>average: {{ average }}</p>
-  </section>
-  <section>
-    <p v-if="mode">mode: {{ mode }}</p>
-    <p v-else>mode: No mode found</p>
-  </section>
-  <section>
-    <p>median: {{ median }}</p>
-  </section>
+  <the-header>
+    <h1>Central Tendency App</h1>
+  </the-header>
+
+  <base-card>
+    <section v-if="hasCustomers">
+      <h1>Date of Birth of Customers</h1>
+      <ul v-for="customer in customers" :key="customer.id">
+        <li>{{ customer.dob }}</li>
+      </ul>
+    </section>
+    <h3 v-else>No customers are registered...</h3>
+  </base-card>
+  
+  <base-card>
+    <base-button @click="calcCentralTendency()"
+      >Calculate Central Tendency</base-button
+    >
+    <h2>AVERAGE: {{ average }}</h2>
+    <h2>MODE: {{ mode }}</h2>
+    <h2>MEDIAN: {{ median }}</h2>
+  </base-card>
 </template>
 
 <script>
+import TheHeader from "@/components/TheHeader.vue";
+
 export default {
+  components: {
+    TheHeader,
+  },
   data() {
     return {
       average: null,
@@ -74,25 +83,24 @@ export default {
           mostFrequent = array[i];
         }
       }
-      return mostFrequent;
+      return mostFrequent ? mostFrequent : "No Mode Found";
     },
 
     searchMedian(array) {
       // [27, 30, 39, 39, 40, 48, 59]
       const sortedAges = array.sort(); // JS sort uses quicksort. Consider using different algorithms for larger data
-      console.log(sortedAges)
-      var middleIndex = Math.floor(sortedAges.length / 2);
-      
+      let middleIndex = Math.floor(sortedAges.length / 2);
+
       // if length of array is even, calculate the average between 2 numbers
       if (sortedAges.length % 2 === 0) {
-        return (sortedAges[middleIndex - 1] + sortedAges[middleIndex]) / 2
+        return (sortedAges[middleIndex - 1] + sortedAges[middleIndex]) / 2;
       }
-      return sortedAges[middleIndex]
+      return sortedAges[middleIndex];
     },
 
     calcCentralTendency() {
       const customers = this.customers;
-      const ages = [];
+      let ages = [];
       for (const key in customers) {
         const age = this.getAge(customers[key].dob);
         ages.push(age);
