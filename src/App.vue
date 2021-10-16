@@ -18,7 +18,7 @@
       >Calculate Central Tendency</base-button
     >
     <h2>AVERAGE: {{ average }}</h2>
-    <h2>MODE: {{ mode }}</h2>
+    <h2>MODE(S): {{ mode }}</h2>
     <h2>MEDIAN: {{ median }}</h2>
   </base-card>
 </template>
@@ -62,32 +62,32 @@ export default {
       return ageDiffDate.getUTCFullYear() - 1970;
     },
 
-    searchMode(array) {
+    searchModes(array) {
+      // [27, 30, 39, 39, 40, 40, 48, 59]
       let counts = {};
-      let compare = 0;
-      let mostFrequent;
-      for (let i = 0, len = array.length; i < len; i++) {
-        let age = array[i]; //27
+      let mostFrequent = 0;
+      let modes = [];
 
-        // if age doesn't exist in counts object
-        if (counts[age] === undefined) {
-          counts[age] = 1; // counts : { 27 : 1 }
-        } else {
-          // if exists
-          counts[age] = counts[age] + 1; // counts: { 27 : 2 }
-        }
+      for (let i in array) {
+        counts[array[i]] = (counts[array[i]] || 0) + 1; // counts: { 27 : 1 }
 
-        // if the age was counted more than once, store frequency in compare and the age in mostFrequent
-        if (counts[age] > compare && counts[age] > 1) {
-          compare = counts[age];
-          mostFrequent = array[i];
+        if (counts[array[i]] > mostFrequent) {
+          mostFrequent = counts[array[i]];
         }
       }
-      return mostFrequent ? mostFrequent : "No Mode Found";
+
+      for (let j in counts) {
+        // same frequency?
+        if (counts[j] == mostFrequent) {
+          modes.push(j);
+        }
+      }
+      
+      // no modes if all elements in array have the same frequency
+      return modes.length == array.length ? "No modes found" : modes;
     },
 
     searchMedian(array) {
-      // [27, 30, 39, 39, 40, 48, 59]
       const sortedAges = array.sort(); // JS sort uses quicksort. Consider using different algorithms for larger data
       let middleIndex = Math.floor(sortedAges.length / 2);
 
@@ -114,7 +114,7 @@ export default {
 
       const sum = ages.reduce((prev, curr) => prev + curr, 0); // initial value = 0
       this.average = (sum / ages.length).toFixed(2);
-      this.mode = this.searchMode(ages);
+      this.mode = this.searchModes(ages);
       this.median = this.searchMedian(ages);
     },
   },
