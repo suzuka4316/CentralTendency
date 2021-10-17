@@ -49,9 +49,9 @@ export default {
 
     getAge(customerDob) {
       const dashTakenDob = customerDob.replace(/-/g, "");
-      const day = dashTakenDob.substr(0, 2);
+      const day   = dashTakenDob.substr(0, 2);
       const month = dashTakenDob.substr(2, 2);
-      const year = dashTakenDob.substr(4, 4);
+      const year  = dashTakenDob.substr(4, 4);
 
       const dob = new Date(year, month, day);
       // age difference in milliseconds
@@ -72,23 +72,25 @@ export default {
         counts[array[i]] = (counts[array[i]] || 0) + 1; // counts: { 27 : 1 }
 
         if (counts[array[i]] > mostFrequent) {
+          // update the mostFrequent
           mostFrequent = counts[array[i]];
         }
       }
 
       for (let j in counts) {
-        // same frequency?
+        // does another element in array have the same frequency?
         if (counts[j] == mostFrequent) {
           modes.push(j);
         }
       }
       
-      // no modes if all elements in array have the same frequency
-      return modes.length == array.length ? "No modes found" : modes;
+      // no modes exist if all elements in array have the same frequency e.g [27, 30, 39, 40, 48, 59]
+      return modes.length == array.length ? "No modes found" : modes.join(" and ");
     },
 
     searchMedian(array) {
       const sortedAges = array.sort(); // JS sort uses quicksort. Consider using different algorithms for larger data
+
       let middleIndex = Math.floor(sortedAges.length / 2);
 
       // if length of array is even, calculate the average between 2 numbers
@@ -102,6 +104,8 @@ export default {
 
     calcCentralTendency() {
       const customers = this.customers;
+
+      // create ages array based on the customers data received from Firebase
       let ages = [];
       for (const key in customers) {
         const age = this.getAge(customers[key].dob);
@@ -112,19 +116,16 @@ export default {
         return;
       }
 
-      const sum = ages.reduce((prev, curr) => prev + curr, 0); // initial value = 0
-      this.average = (sum / ages.length).toFixed(2);
-      this.mode = this.searchModes(ages);
-      this.median = this.searchMedian(ages);
+      const agesTotal = ages.reduce((prev, curr) => prev + curr, 0); // initial value = 0
+      this.average = (agesTotal / ages.length).toFixed(2);
+      this.mode    = this.searchModes(ages);
+      this.median  = this.searchMedian(ages);
     },
   },
 
   computed: {
     hasCustomers() {
-      if (this.customers.length > 0) {
-        return true;
-      }
-      return false;
+      return this.customers.length > 0;
     },
     customers() {
       return this.$store.getters["customers"];
